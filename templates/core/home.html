@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Portfolio Builder - Create Your Professional Portfolio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Build Your Professional Portfolio in Minutes</h1>
+                <p class="lead mb-4">Create stunning, responsive portfolios that showcase your skills, projects, and experience. No coding required!</p>
+                <div class="d-flex gap-3">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg">Get Started Free</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Sign In</a>
+                    {% else %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">Go to Dashboard</a>
+                        <a href="{% url 'portfolio_preview' %}" class="btn btn-outline-light btn-lg">Preview Portfolio</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative">
+                    <i class="fas fa-laptop-code" style="font-size: 15rem; opacity: 0.1;"></i>
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <i class="fas fa-briefcase text-white" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto mb-3">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="h4">{{ total_users }}+</h3>
+                <p class="text-muted">Active Users</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto mb-3">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3 class="h4">{{ total_portfolios }}+</h3>
+                <p class="text-muted">Live Portfolios</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto mb-3">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3 class="h4">100%</h3>
+                <p class="text-muted">Export Ready</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold">Everything You Need to Showcase Your Work</h2>
+                <p class="lead text-muted">Professional portfolio features designed for modern professionals</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h5>Multiple Themes</h5>
+                    <p class="text-muted">Choose from modern, classic, minimal, and creative themes to match your style.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h5>Responsive Design</h5>
+                    <p class="text-muted">Your portfolio looks perfect on all devices - desktop, tablet, and mobile.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5>Analytics</h5>
+                    <p class="text-muted">Track portfolio views, visitor engagement, and project clicks.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h5>Export Portfolio</h5>
+                    <p class="text-muted">Download your portfolio as static files for hosting anywhere.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h5>Custom Domain</h5>
+                    <p class="text-muted">Use your own domain or get a free subdomain for your portfolio.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>Privacy Control</h5>
+                    <p class="text-muted">Make your portfolio public or private with full control over visibility.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Portfolios -->
+{% if featured_profiles %}
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold">Featured Portfolios</h2>
+                <p class="lead text-muted">Check out some amazing portfolios created by our users</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for profile in featured_profiles %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ profile.user.get_full_name }}">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ profile.user.get_full_name|default:profile.user.username }}</h5>
+                        <p class="card-text text-muted">{{ profile.title|default:"Professional" }}</p>
+                        <p class="card-text">{{ profile.bio|truncatewords:15 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'portfolio_detail' profile.user.username %}" class="btn btn-primary btn-sm">
+                            View Portfolio <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-4">Ready to Build Your Portfolio?</h2>
+                <p class="lead mb-4">Join thousands of professionals who trust Portfolio Builder to showcase their work.</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg">Start Building Now</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">Go to Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Portfolio Builder{% endblock %}
+
+{% block extra_css %}
+<style>
+.progress-bar-custom {
+    height: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="sidebar p-3">
+                <h6 class="text-muted text-uppercase fw-bold mb-3">Portfolio</h6>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="{% url 'dashboard' %}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link" href="{% url 'profile_edit' %}">
+                        <i class="fas fa-user me-2"></i>Profile
+                    </a>
+                    <a class="nav-link" href="{% url 'skills_manage' %}">
+                        <i class="fas fa-cogs me-2"></i>Skills
+                    </a>
+                    <a class="nav-link" href="{% url 'projects_manage' %}">
+                        <i class="fas fa-folder me-2"></i>Projects
+                    </a>
+                    <a class="nav-link" href="{% url 'services_manage' %}">
+                        <i class="fas fa-briefcase me-2"></i>Services
+                    </a>
+                    <a class="nav-link" href="{% url 'experiences_manage' %}">
+                        <i class="fas fa-building me-2"></i>Experience
+                    </a>
+                    <a class="nav-link" href="{% url 'education_manage' %}">
+                        <i class="fas fa-graduation-cap me-2"></i>Education
+                    </a>
+                    <a class="nav-link" href="{% url 'testimonials_manage' %}">
+                        <i class="fas fa-quote-left me-2"></i>Testimonials
+                    </a>
+                    <a class="nav-link" href="{% url 'social_links_manage' %}">
+                        <i class="fas fa-share-alt me-2"></i>Social Links
+                    </a>
+                </nav>
+                
+                <hr>
+                
+                <h6 class="text-muted text-uppercase fw-bold mb-3">Tools</h6>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{% url 'portfolio_preview' %}">
+                        <i class="fas fa-eye me-2"></i>Preview
+                    </a>
+                    <a class="nav-link" href="{% url 'analytics' %}">
+                        <i class="fas fa-chart-bar me-2"></i>Analytics
+                    </a>
+                    <a class="nav-link" href="{% url 'export_portfolio' %}">
+                        <i class="fas fa-download me-2"></i>Export
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                    <p class="text-muted">Manage your portfolio and track your progress</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'portfolio_preview' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i>Preview
+                    </a>
+                    {% if profile.is_public %}
+                        <a href="{% url 'portfolio_detail' user.username %}" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt me-1"></i>View Live
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Progress Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="card-title">Portfolio Completion</h5>
+                            <p class="card-text text-muted">Complete your portfolio to make it more attractive to visitors</p>
+                            <div class="progress progress-bar-custom">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100" data-width="{{ completion_percentage }}"></div>
+                            </div>
+                            <small class="text-muted">{{ completion_percentage|floatformat:0 }}% complete</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="progress-circle mx-auto d-flex align-items-center justify-content-center bg-primary text-white rounded-circle">
+                                <span class="fw-bold">{{ completion_percentage|floatformat:0 }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mx-auto mb-2">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <h3 class="h4 mb-0">{{ skills_count }}</h3>
+                            <p class="text-muted mb-0">Skills</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mx-auto mb-2">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <h3 class="h4 mb-0">{{ projects_count }}</h3>
+                            <p class="text-muted mb-0">Projects</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mx-auto mb-2">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h3 class="h4 mb-0">{{ experiences_count }}</h3>
+                            <p class="text-muted mb-0">Experience</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mx-auto mb-2">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <h3 class="h4 mb-0">{{ analytics.page_views }}</h3>
+                            <p class="text-muted mb-0">Views Today</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-user me-2"></i>Update Profile
+                                </a>
+                                <a href="{% url 'projects_manage' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-plus me-2"></i>Add Project
+                                </a>
+                                <a href="{% url 'skills_manage' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-cogs me-2"></i>Manage Skills
+                                </a>
+                                <a href="{% url 'testimonials_manage' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-quote-left me-2"></i>Add Testimonial
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Portfolio Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    {% if profile.is_public %}
+                                        <span class="badge bg-success">Public</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Private</span>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="mb-0">
+                                        {% if profile.is_public %}
+                                            Your portfolio is live and visible to everyone
+                                        {% else %}
+                                            Your portfolio is private and only visible to you
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Theme:</strong> {{ profile.theme|title }}
+                            </div>
+                            
+                            {% if profile.is_public %}
+                                <div class="mb-3">
+                                    <strong>Portfolio URL:</strong><br>
+                                    <a href="{% url 'portfolio_detail' user.username %}" target="_blank" class="text-break">
+                                        {{ request.build_absolute_uri }}portfolio/{{ user.username }}/
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="d-grid">
+                                <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-1"></i>Edit Settings
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBar = document.querySelector('.progress-bar[data-width]');
+    if (progressBar) {
+        const width = progressBar.getAttribute('data-width');
+        progressBar.style.width = width + '%';
+    }
+});
+</script>
+{% endblock %} 
